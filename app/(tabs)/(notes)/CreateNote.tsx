@@ -9,6 +9,9 @@ import {
 import React, { useState } from "react";
 import colors from "../../../data/styling/colors";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useMutation } from "@tanstack/react-query";
+import { createNote } from "@/api/notes";
+import { NoteType } from "@/types/NoteType";
 
 const AddNote = () => {
   const [title, setTitle] = useState("");
@@ -18,6 +21,14 @@ const AddNote = () => {
   const addTopic = () => {
     setTopics([...topics, ""]);
   };
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["createNote"],
+    mutationFn: () => createNote({ title, topic: topics, body: noteBody }),
+    onSuccess: () => {
+      alert("Note was added!");
+    },
+  });
 
   const updateTopic = (text: string, index: number) => {
     const newTopics = [...topics];
@@ -160,6 +171,7 @@ const AddNote = () => {
           />
 
           <TouchableOpacity
+            onPress={() => mutate()}
             style={{
               backgroundColor: colors.white,
               padding: 15,

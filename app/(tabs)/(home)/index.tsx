@@ -2,6 +2,9 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import colors from "../../../data/styling/colors";
 import Note from "../../../components/Note";
+import { getAllNotes } from "@/api/notes";
+import { useQuery } from "@tanstack/react-query";
+import { NoteType } from "@/types/NoteType";
 
 const Home = () => {
   const note = {
@@ -17,6 +20,12 @@ const Home = () => {
       updatedAt: "2021-01-01",
     },
   };
+
+  const { data } = useQuery({
+    queryKey: ["getAllNotes"],
+    queryFn: () => getAllNotes(),
+  });
+
   return (
     <View
       style={{
@@ -33,7 +42,9 @@ const Home = () => {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <Note key={"1"} note={note} />
+        {data?.map((note: NoteType) => (
+          <Note key={note._id} note={note} />
+        ))}
       </ScrollView>
     </View>
   );
